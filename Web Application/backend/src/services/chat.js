@@ -4,7 +4,7 @@ import {
   promptIntent,
   promptViewReference,
 } from '../prompts.js'
-import { chatWithOllama } from './ollama.js'
+import { chatWithOllama } from '../../../../Shared/ollama.js'
 import { getCategories } from './products.js'
 import { semanticSearch } from './search.js'
 
@@ -17,15 +17,6 @@ function schema(properties) {
     required: Object.keys(properties),
     additionalProperties: false,
   }
-}
-
-function unique(values) {
-  return [...new Map(
-    values
-      .map((value) => String(value).trim())
-      .filter(Boolean)
-      .map((value) => [value.toLowerCase(), value]),
-  ).values()]
 }
 
 function splitConversation(messages) {
@@ -171,16 +162,15 @@ async function analyzeChat(messages, viewContext) {
     conversationInput(conversation),
   ], queryProperties(categories), true)
 
-  search.relatedSearchTerms = unique(search.relatedSearchTerms)
   return { ...intent, useView, ...search }
 }
 
 async function recommend(analysis) {
   return semanticSearch({
-    queries: unique([
+    queries: [
       analysis.semanticQuery,
       ...analysis.relatedSearchTerms,
-    ]),
+    ],
     ...analysis.filters,
     limit: 30,
   })

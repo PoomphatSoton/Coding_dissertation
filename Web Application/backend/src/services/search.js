@@ -1,5 +1,5 @@
 import { prisma } from '../db.js'
-import { embedQueries } from './ollama.js'
+import { embedQueries } from '../../../../Shared/ollama.js'
 
 function normalizeStrings(values) {
   if (!Array.isArray(values)) return []
@@ -139,13 +139,8 @@ export async function semanticSearch({
   limit = 30,
   ...options
 }) {
-  const uniqueQueries = [...new Set(
-    (queries ?? []).map((query) => String(query).trim()).filter(Boolean),
-  )]
-  if (uniqueQueries.length === 0) return []
-
   const resultLimit = normalizeLimit(limit, 30)
-  const vectors = await embedQueries(uniqueQueries)
+  const vectors = await embedQueries(queries)
   const resultSets = await Promise.all(
     vectors.map((vector) => matchProducts(vector, { ...options, limit: resultLimit })),
   )
