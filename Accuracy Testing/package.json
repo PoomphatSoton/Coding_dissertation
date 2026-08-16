@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "dependencies": {
+    "ml-distance": "4.0.1"
+  }
+}
