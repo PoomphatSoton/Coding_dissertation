@@ -18,7 +18,7 @@ export function ProductDetail({ detail, onBack, onAdd }: ProductDetailProps) {
   const images = detail.images.length
     ? detail.images
     : product.featured_image_url
-      ? [{ image_index: 0, image_url: product.featured_image_url, alt: product.title, width: 0, height: 0 }]
+      ? [{ image_index: 0, image_url: product.featured_image_url, alt: product.title }]
       : []
   const available = variants.filter((variant) => variant.in_stock)
   const colors = unique(available.map((variant) => variant.color))

@@ -5,7 +5,6 @@ import type {
   ChatViewContext,
   ProductDetail,
   ProductListItem,
-  ProductRecord,
 } from './types'
 
 const apiBase = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
@@ -43,14 +42,14 @@ export async function getProducts({
   offset?: number
   generalCategory?: string
 } = {}): Promise<{
-  products: ProductRecord[]
+  products: ProductListItem[]
   pagination: { total: number; limit: number; offset: number }
 }> {
   const query = new URLSearchParams({ limit: String(limit), offset: String(offset) })
   if (generalCategory) query.set('generalCategory', generalCategory)
 
   const data = await request<{
-    products: ProductRecord[]
+    products: ProductListItem[]
     pagination: { total: number; limit: number; offset: number }
   }>(`/api/products?${query}`)
 
@@ -89,10 +88,6 @@ export async function getProductDetail(id: string): Promise<ProductDetail> {
     variants: data.variants.map((variant) => ({
       ...variant,
       price_usd: Number(variant.price_usd),
-      compare_at_price_usd:
-        variant.compare_at_price_usd === null
-          ? null
-          : Number(variant.compare_at_price_usd),
     })),
   }
 }
@@ -115,7 +110,6 @@ export async function sendChat(
     products:
       data.products?.map((product): ChatProduct => ({
         ...normalizeProduct(product),
-        similarity: Number(product.similarity),
       })) ?? null,
   }
 }
